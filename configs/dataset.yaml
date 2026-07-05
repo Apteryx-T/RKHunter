@@ -1,0 +1,11 @@
+﻿path: data/processed/rkhunter
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: suspected_meteorite
+  1: dark_rock
+  2: metal_debris
+  3: shadow
+  4: background

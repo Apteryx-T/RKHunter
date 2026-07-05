@@ -1,0 +1,9 @@
+﻿task: detection
+model_family: yolo
+image_size: 1024
+initial_goal: high_recall_candidate_detection
+
+notes:
+  - Start with a small model for feasibility testing.
+  - Review false positives before scaling model size.
+  - Do not treat model output as meteorite confirmation.
