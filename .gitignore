@@ -49,5 +49,6 @@ models/*
 # Logs
 *.log
 runs/
+Ultralytics/
 wandb/
 mlruns/

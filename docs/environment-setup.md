@@ -1,79 +1,61 @@
 # Windows Environment Setup
 
-This project needs a real Python installation before local model training can run.
+## Current local environment
 
-## Current Symptom
-
-If this command returns nothing useful or opens the Microsoft Store placeholder, Python is not installed correctly:
-
-```powershell
-python --version
-```
-
-## Install Python
-
-Install Python from the official Windows download page:
+The verified project environment is:
 
 ```text
-https://www.python.org/downloads/windows/
+Python       3.12.10, 64-bit
+virtualenv   D:\RKHunter\.venv
+torch        2.13.0+cpu
+torchvision  0.28.0+cpu
+Ultralytics  8.4.92
+CUDA         false
 ```
 
-Recommended version:
+This machine is CPU-only. That is sufficient for the current small feasibility, annotation, and smoke-test workflows; it is not intended for large detector training.
 
-```text
-Python 3.11 or Python 3.12, 64-bit
-```
-
-During installation, check:
-
-```text
-Add python.exe to PATH
-```
-
-Then close and reopen PowerShell.
-
-## Verify
+Use the virtual-environment interpreter explicitly so Windows Store Python aliases or a different global Python cannot be selected accidentally:
 
 ```powershell
-python --version
-python -m pip --version
+D:\RKHunter\.venv\Scripts\python.exe --version
+D:\RKHunter\.venv\Scripts\python.exe -m pip --version
 ```
 
-Both commands should print a version.
+## Recreate the environment if needed
 
-## Install Classification Dependencies
-
-From the project root:
+Install Python 3.11 or 3.12 64-bit from the official Python Windows installer, then run from `D:\RKHunter`:
 
 ```powershell
-cd D:\RKHunter
-python -m pip install -r requirements-classifier.txt
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements-classifier.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-yolo.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements-annotator.txt
 ```
 
-## Rebuild The Local Dataset
+Dataset files, virtual environments, model weights, caches, training runs, and annotation databases remain local and are ignored by Git.
+
+## Verify the code and annotation environment
+
+```powershell
+D:\RKHunter\.venv\Scripts\python.exe -m unittest discover -s tests -v
+D:\RKHunter\.venv\Scripts\python.exe scripts\validate_annotation_pipeline.py
+```
+
+The second command uses only the explicit local model and local dataset. The annotation launcher, training script, and prediction script force `YOLO_OFFLINE=true`, `YOLO_AUTOINSTALL=false`, and repository-local cache directories before importing Ultralytics.
+
+## Classification baseline
+
+Rebuild and train the original classifier baseline with:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\build_visual_baseline_classification_dataset.ps1
+D:\RKHunter\.venv\Scripts\python.exe scripts\train_classifier.py --epochs 10
 ```
 
-## Train The First Baseline
+The classifier is only a small visual baseline. Drone detection still requires reviewed bounding boxes and a detector.
 
-```powershell
-python scripts\train_classifier.py --epochs 10
-```
+## Local annotation tool
 
-The model checkpoint will be saved under:
-
-```text
-models/classifier-visual-baseline-001.pt
-```
-
-## Predict On Images
-
-```powershell
-python scripts\predict_classifier.py path\to\image_or_folder
-```
-
-## Note
-
-This classifier is only a small baseline for learning visual differences between meteorite reference images, barren backgrounds, and rock/mineral distractors. Final drone detection still requires bounding-box labels and a detector such as YOLO.
+See [annotation-tool.md](annotation-tool.md) for startup, review, model-upgrade, export, and validation instructions.

@@ -36,7 +36,15 @@ Remove images dominated by:
 
 ## 3. Annotation
 
-Use CVAT, Label Studio, or Roboflow to label candidate objects.
+Use the local RKHunter annotation tool for model proposals and human review. CVAT, Label Studio, or Roboflow can still be used for interchange when needed.
+
+```powershell
+D:\RKHunter\.venv\Scripts\python.exe scripts\run_annotation_tool.py `
+  --dataset data\processed\rkhunter `
+  --model experiments\yolo\smoke-weak-labels-pretrained-10e\weights\best.pt
+```
+
+Detailed instructions are in [annotation-tool.md](annotation-tool.md).
 
 Recommended labels:
 
@@ -82,7 +90,11 @@ python -m pip install ultralytics opencv-python pyyaml
 Run:
 
 ```powershell
-python scripts\train_yolo.py --data configs\dataset.yaml --model yolov8n.pt --epochs 30 --imgsz 1024
+D:\RKHunter\.venv\Scripts\python.exe scripts\train_yolo.py `
+  --data experiments\annotation-tool\exports\<reviewed-revision>\dataset.yaml `
+  --model models\yolov8n.pt `
+  --device cpu `
+  --epochs 10
 ```
 
 The first goal is high recall, not perfect precision.

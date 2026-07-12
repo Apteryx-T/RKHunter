@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RKHunter 标注台</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">RK</span>
+      <div><strong>RKHunter 标注台</strong><small id="versionText">本地优先 · 加载中</small></div>
+    </div>
+    <div class="project-controls">
+      <label>项目<select id="projectSelect"></select></label>
+      <label>状态<select id="statusFilter">
+        <option value="">全部</option>
+        <option value="unreviewed">未审核</option>
+        <option value="auto_labeled">自动草稿</option>
+        <option value="reviewed">已审核</option>
+        <option value="rejected">已拒绝</option>
+      </select></label>
+      <button id="refreshButton" class="ghost">刷新</button>
+    </div>
+    <div id="saveState" class="save-state">已同步</div>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <div><strong>审核队列</strong><span id="queueCount">0</span></div>
+        <input id="searchInput" placeholder="筛选文件名">
+      </div>
+      <div id="imageList" class="image-list"></div>
+    </aside>
+
+    <section class="stage-column">
+      <div class="toolbar">
+        <div class="tool-group">
+          <button data-tool="select" class="tool active" title="选择/移动 (V)">选择</button>
+          <button data-tool="draw" class="tool" title="画框 (B)">画框</button>
+          <button data-tool="pan" class="tool" title="平移 (H)">平移</button>
+        </div>
+        <div class="tool-group">
+          <button id="zoomOutButton" class="ghost">−</button>
+          <span id="zoomText">100%</span>
+          <button id="zoomInButton" class="ghost">＋</button>
+          <button id="fitButton" class="ghost">适配</button>
+        </div>
+        <div class="tool-group grow">
+          <label>类别<select id="classSelect"></select></label>
+          <button id="deleteButton" class="danger ghost">删除框</button>
+          <button id="undoButton" class="ghost">撤销</button>
+          <button id="redoButton" class="ghost">重做</button>
+        </div>
+        <div class="tool-group">
+          <label>模型<select id="modelSelect"></select></label>
+          <button id="autoButton" class="accent">自动标当前</button>
+          <button id="batchButton" class="ghost">自动标队列</button>
+        </div>
+      </div>
+
+      <div id="canvasWrap" class="canvas-wrap">
+        <canvas id="annotationCanvas"></canvas>
+        <div id="emptyState" class="empty-state">从左侧选择一张图片</div>
+        <div id="loadingOverlay" class="loading-overlay hidden">处理中…</div>
+      </div>
+
+      <div class="image-meta">
+        <div><strong id="imageName">未选择</strong><span id="imageInfo"></span></div>
+        <div id="warningText" class="warning"></div>
+      </div>
+    </section>
+
+    <aside class="inspector">
+      <section>
+        <h2>标注</h2>
+        <div id="boxList" class="box-list"><p class="muted">尚无框</p></div>
+      </section>
+      <section>
+        <h2>审核动作</h2>
+        <button id="saveButton" class="primary full">保存并批准</button>
+        <button id="backgroundButton" class="ghost full">确认纯背景</button>
+        <button id="rejectButton" class="danger ghost full">拒绝此图</button>
+        <div class="nav-row">
+          <button id="prevButton" class="ghost">上一张</button>
+          <button id="nextButton" class="ghost">下一张</button>
+        </div>
+      </section>
+      <section>
+        <h2>项目统计</h2>
+        <div id="statsPanel" class="stats"></div>
+      </section>
+      <section>
+        <h2>数据版本</h2>
+        <button id="exportButton" class="ghost full">导出已审核 YOLO revision</button>
+        <small class="muted">每次导出创建新目录，不覆盖原标签。</small>
+      </section>
+      <section class="shortcuts">
+        <h2>快捷键</h2>
+        <p><kbd>V</kbd>选择 <kbd>B</kbd>画框 <kbd>Del</kbd>删除</p>
+        <p><kbd>Ctrl+S</kbd>保存 <kbd>←</kbd><kbd>→</kbd>切图</p>
+      </section>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
